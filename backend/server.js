@@ -1,36 +1,33 @@
-require ('dotenv').config()
-const express =  require('express')
+require('dotenv').config()
+
+const express = require('express')
 const mongoose = require('mongoose')
-
-const workoutRoutes = require('./routes/workoutlog')
-//express app
+const workoutRoutes = require('./routes/workouts')
+const userRoutes = require('./routes/user')
+// EXPRESS APP
 const app = express()
-//routes
 
-
-//middleware
-app.use(express.json()); //needed to get body data tp req incase of post or patch
-
+// MIDDLEWARE
+app.use(express.json())
 
 app.use((req, res, next) => {
-    console.log(req.path, req.method)
-    next()
+  console.log(req.path, req.method)
+  next()
 })
 
-
+// ROUTES
 app.use('/api/workouts', workoutRoutes)
-// listen
+app.use('/api/user', userRoutes)
 
-mongoose.connect(process.env.MONGO_URI)
-    .then(()=>{
-
-        app.listen(process.env.PORT, () => {
-        console.log('connected to db and listening on port', process.env.PORT)
+// CONNECT TO DB
+mongoose
+  .connect(process.env.MONGO_URI)
+  .then(() => {
+    // LISTEN FOR REQUESTS
+    app.listen(process.env.PORT, () => {
+      console.log('Connected to db & listening on port http://localhost:4000')
     })
-})
-.catch((error) => {
+  })
+  .catch((error) => {
     console.log(error)
-})
-
-
-// mongodb+srv://samroadie:<password>@cluster0.ubpey04.mongodb.net/?retryWrites=true&w=majority
+  })
